@@ -1,0 +1,157 @@
+// Gulp
+var gulp = require('gulp');
+
+// Plugins
+var sass = require('gulp-sass');
+var plumber = require('gulp-plumber');
+var prefix = require('gulp-autoprefixer');
+var minifycss = require('gulp-minify-css');
+var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
+var browserSync = require('browser-sync').create();
+var sourcemaps = require('gulp-sourcemaps');
+var twig = require('gulp-twig');
+var svgSprite = require('gulp-svg-sprite');
+var cssGlobbing = require('gulp-css-globbing');
+
+// Paths
+var paths = {
+    scripts: [
+        // 'bower_components/modernizr/modernizr.js',
+        // 'bower_components/fastclick/lib/fastclick.js',
+        // 'bower_components/foundation/js/foundation/foundation.js',
+        // 'bower_components/foundation/js/foundation/foundation.tab.js',
+        // 'assets/js/navigation.js',
+
+        'bower_components/responsive-tabs/js/jquery.responsiveTabs.min.js',
+        'assets/js/svg4everybody.min.js',
+        'assets/js/components/*.js',
+        'assets/js/main.js'
+        ],
+    images: ['assets/svg/*.svg'],
+    fonts: [
+        'assets/fonts/*.{ttf,woff,eot,svg}'
+        ],
+    scss: [
+        'assets/scss/main.scss',
+        ],
+    scssWatch: [
+        'assets/scss/**/*.scss'
+        ],
+    twigTemplates: [
+      'assets/twig/[^_]*.twig',
+    ],
+    twigWatch: [
+      'assets/twig/*.twig',
+    ],
+    dest : 'dist/'
+};
+
+// Compile Sass
+gulp.task('sass', function() {
+    gulp.src(paths.scss)
+        .pipe(plumber())
+        // .pipe(sourcemaps.init()) // Initialize sourcemap plugin
+        .pipe(cssGlobbing({
+          extensions: ['.scss'],
+          autoReplaceBlock: {
+            onOff: true,
+            globBlockBegin: 'cssGlobbingBegin',
+            globBlockEnd: 'cssGlobbingEnd',
+            globBlockContents: 'components/*.scss'
+          },
+          scssImportPath: {
+            leading_underscore: false,
+            filename_extension: false
+          }
+        }))
+        .pipe(sass({
+            includePaths: ['assets/scss', 'bower_components/foundation/scss'],
+            outputStyle: 'expanded'
+        }))
+        .pipe(prefix(
+            "last 2 versions", "> 1%", "ie 8"
+        ))
+        // .pipe(minifycss()) //TODO turn on
+        // .pipe(sourcemaps.write())
+        .pipe(gulp.dest(paths.dest + 'css'))
+        .pipe(browserSync.stream());
+});
+
+// Compile Twig templates
+gulp.task('twig', function () {
+    'use strict';
+    return gulp.src(paths.twigTemplates)
+        .pipe(twig())
+        .pipe(gulp.dest('.'))
+        .pipe(browserSync.stream());
+});
+
+// Uglify JS
+gulp.task('uglify', function() {
+    gulp.src( ['assets/js/main.js'] )
+        .pipe(plumber())
+        .pipe(uglify({
+            outSourceMap: true
+        }))
+        .pipe(gulp.dest(paths.dest + 'js'));
+});
+
+// Concat
+// TODO concat normalize.css from bower components with our stylesheet
+gulp.task('concat', function() {
+  gulp.src( paths.scripts )
+    .pipe(plumber())
+    .pipe(concat('main.js'))
+    .pipe(uglify({
+        outSourceMap: true
+    }))
+    .pipe(gulp.dest(paths.dest + 'js'))
+    .pipe(browserSync.stream());
+});
+
+// //SVGs
+gulp.task('svg-sprite', function() {
+    gulp.src( paths.images)
+        .pipe(plumber())
+        .pipe(svgSprite({
+            "log": "verbose",
+            "transform": [],
+            mode : {
+                symbol : {
+                    inline : true,
+                    sprite : "sprite.symbol.svg",
+                    bust : false,
+                    render : {
+                        scss : true,
+                    }
+                }
+            }
+        }))
+        .on('error', function(error){
+            console.log('error in svg sprite' + error);
+        })
+        .pipe(gulp.dest('images'));
+});
+
+gulp.task('copyfonts', function() {
+   gulp.src(paths.fonts)
+   .pipe(gulp.dest(paths.dest + '/fonts'));
+});
+
+gulp.task('serve', function() {
+
+    browserSync.init({
+        server: {
+            baseDir: ".",
+            index: "/index.html"
+        }
+    });
+
+    gulp.watch(paths.twigWatch, ['twig']);
+    gulp.watch(paths.scssWatch, ['sass']);
+    gulp.watch(paths.scripts, ['concat']);
+    // gulp.watch("./*.html").on('change', browserSync.reload);
+});
+
+gulp.task('default', [ 'copyfonts', 'sass', 'twig', 'concat', 'serve' ]);

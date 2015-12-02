@@ -1,0 +1,24 @@
+{
+  "name": "EIGE",
+  "author": "Andrej Minarik",
+  "private": true,
+  "version": "0.0.1",
+  "devDependencies": {
+    "bower": "latest",
+    "gulp": "latest",
+    "gulp-autoprefixer": "latest",
+    "gulp-concat": "latest",
+    "gulp-css-globbing": "^0.1.8",
+    "gulp-minify-css": "latest",
+    "gulp-plumber": "latest",
+    "gulp-sass": "latest",
+    "gulp-sourcemaps": "latest",
+    "gulp-svg-sprite": "^1.2.12",
+    "gulp-twig": "^0.3.0",
+    "gulp-uglify": "latest",
+    "gulp-watch": "latest"
+  },
+  "dependencies": {
+    "browser-sync": "^2.5.2"
+  }
+}

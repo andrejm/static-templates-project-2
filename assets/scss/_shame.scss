@@ -1,0 +1,24 @@
+/* ==========================================================================
+   Shame
+   - this is place for code we're not very proud of. The code which feels dirty but you don't know/don't have time to deal with it at the moment.
+   - it should be refactored someday later
+   - it lives here so it won't get forgotten
+   - if there is nothing in this file, well done champs! :)
+   ========================================================================== */
+
+#pr-main {
+    .pr-shame-padding--examples-from-eu {
+        padding-bottom: 62px;
+    }
+
+    .pr-shame-why-invest {
+        margin-bottom: 1.5rem;
+        h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .pr-media-object {
+          margin-bottom: 3rem;
+        }
+    }
+}

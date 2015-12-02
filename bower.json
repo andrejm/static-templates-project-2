@@ -1,0 +1,9 @@
+{
+  "name": "EIGE",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {
+    "responsive-tabs": "~1.5.1",
+    "foundation": "~5.5.3"
+  }
+}

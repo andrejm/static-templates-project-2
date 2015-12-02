@@ -1,0 +1,16 @@
+@import '../../bower_components/foundation/scss/foundation/functions';
+
+@import 'mixins';
+@import 'icomoon';
+@import 'icomoon-variables';
+@import 'common';
+@import 'typography';
+@import 'utilites';
+
+// cssGlobbingBegin
+// here be components
+// cssGlobbingEnd
+
+// @import '../../../pr-images/symbol/sprite.scss'; //TODO vytvorit task na prekopirovanie tohto suboru do pr-assets
+
+@import 'shame'; /* temp styles only for development  */
