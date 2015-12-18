@@ -4,6 +4,7 @@
   "dependencies": {},
   "devDependencies": {
     "responsive-tabs": "~1.5.1",
-    "foundation": "~5.5.3"
+    "normalize.css": "~3.0.3",
+    "foundation-sites": "~6.0.6"
   }
 }
