@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "dependencies": {},
   "devDependencies": {
-    "responsive-tabs": "~1.5.1",
     "normalize.css": "~3.0.3",
-    "foundation-sites": "~6.1"
+    "foundation-sites": "~6.2"
   }
 }
