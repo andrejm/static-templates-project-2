@@ -37,6 +37,9 @@ var paths = {
         'assets/js/components/*.js',
         'assets/js/main.js'
         ],
+    copyScripts: [
+        'bower_components/jquery/dist/jquery.min.js'
+        ],
     images: ['assets/svg/*.svg'],
     fonts: [
         'assets/fonts/*.{ttf,woff,eot,svg}'
@@ -148,6 +151,11 @@ gulp.task('copyfonts', function() {
    .pipe(gulp.dest(paths.dest + '/fonts'));
 });
 
+gulp.task('copyScripts', function() {
+   gulp.src(paths.copyScripts)
+   .pipe(gulp.dest(paths.dest + '/js'));
+});
+
 gulp.task('serve', function() {
 
     browserSync.init({
@@ -163,4 +171,4 @@ gulp.task('serve', function() {
     // gulp.watch("./*.html").on('change', browserSync.reload);
 });
 
-gulp.task('default', [ 'copyfonts', 'sass', 'twig', 'concat', 'serve' ]);
+gulp.task('default', [ 'copyfonts', 'copyScripts', 'sass', 'twig', 'concat', 'serve' ]);
