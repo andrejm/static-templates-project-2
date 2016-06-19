@@ -4,9 +4,11 @@
   "private": true,
   "version": "0.0.1",
   "devDependencies": {
+    "babel-preset-es2015": "^6.9.0",
     "bower": "latest",
     "gulp": "latest",
     "gulp-autoprefixer": "latest",
+    "gulp-babel": "^6.1.2",
     "gulp-concat": "latest",
     "gulp-css-globbing": "^0.1.8",
     "gulp-minify-css": "latest",

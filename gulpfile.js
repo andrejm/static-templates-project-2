@@ -13,6 +13,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var twig = require('gulp-twig');
 var svgSprite = require('gulp-svg-sprite');
 var cssGlobbing = require('gulp-css-globbing');
+var babel = require('gulp-babel');
 
 // Paths
 var paths = {
@@ -119,6 +120,7 @@ gulp.task('concat', function() {
         outSourceMap: true
     }))
     .pipe(gulp.dest(paths.dest + 'js'))
+    .pipe(babel())
     .pipe(browserSync.stream());
 });
 
