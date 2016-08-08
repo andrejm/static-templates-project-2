@@ -1,5 +1,5 @@
 {
-  "name": "EIGE",
+  "name": "pechakucha",
   "author": "Andrej Minarik",
   "private": true,
   "version": "0.0.1",
@@ -15,10 +15,12 @@
     "gulp-plumber": "latest",
     "gulp-sass": "latest",
     "gulp-sourcemaps": "latest",
-    "gulp-svg-sprite": "^1.2.12",
+    "gulp-svgmin": "^1.2.2",
+    "gulp-svgstore": "^6.0.0",
     "gulp-twig": "^0.3.0",
     "gulp-uglify": "latest",
-    "gulp-watch": "latest"
+    "gulp-watch": "latest",
+    "path": "^0.12.7"
   },
   "dependencies": {
     "browser-sync": "^2.5.2"

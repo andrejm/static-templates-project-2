@@ -11,7 +11,9 @@ var concat = require('gulp-concat');
 var browserSync = require('browser-sync').create();
 var sourcemaps = require('gulp-sourcemaps');
 var twig = require('gulp-twig');
-var svgSprite = require('gulp-svg-sprite');
+var svgstore = require('gulp-svgstore');
+var svgmin = require('gulp-svgmin');
+var path = require('path');
 var cssGlobbing = require('gulp-css-globbing');
 var babel = require('gulp-babel');
 
@@ -39,7 +41,8 @@ var paths = {
         'assets/js/main.js'
         ],
     copyScripts: [
-        'bower_components/jquery/dist/jquery.min.js'
+        'bower_components/jquery/dist/jquery.min.js',
+        'bower_components/svg4everybody/dist/svg4everybody.min.js'
         ],
     images: ['assets/svg/*.svg'],
     fonts: [
@@ -116,36 +119,31 @@ gulp.task('concat', function() {
   gulp.src( paths.scripts )
     .pipe(plumber())
     .pipe(concat('main.js'))
-    .pipe(uglify({
-        outSourceMap: true
-    }))
+    // .pipe(uglify({
+    //     outSourceMap: true
+    // }))
     .pipe(gulp.dest(paths.dest + 'js'))
     .pipe(babel())
     .pipe(browserSync.stream());
 });
 
 // //SVGs
-gulp.task('svg-sprite', function() {
-    gulp.src( paths.images)
-        .pipe(plumber())
-        .pipe(svgSprite({
-            "log": "verbose",
-            "transform": [],
-            mode : {
-                symbol : {
-                    inline : true,
-                    sprite : "sprite.symbol.svg",
-                    bust : false,
-                    render : {
-                        scss : true,
+gulp.task('svgstore', function () {
+    return gulp
+        .src(paths.images)
+        .pipe(svgmin(function (file) {
+            var prefix = path.basename(file.relative, path.extname(file.relative));
+            return {
+                plugins: [{
+                    cleanupIDs: {
+                        prefix: prefix + '-',
+                        minify: true
                     }
-                }
-            }
+                }]
+            };
         }))
-        .on('error', function(error){
-            console.log('error in svg sprite' + error);
-        })
-        .pipe(gulp.dest('images'));
+        .pipe(svgstore())
+        .pipe(gulp.dest(paths.dest + '/svg/'));
 });
 
 gulp.task('copyfonts', function() {
@@ -173,4 +171,4 @@ gulp.task('serve', function() {
     // gulp.watch("./*.html").on('change', browserSync.reload);
 });
 
-gulp.task('default', [ 'copyfonts', 'copyScripts', 'sass', 'twig', 'concat', 'serve' ]);
+gulp.task('default', [ 'copyfonts', 'copyScripts', 'svgstore', 'sass', 'twig', 'concat', 'serve' ]);
