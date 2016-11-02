@@ -46,7 +46,7 @@ var paths = {
         ],
     images: ['assets/svg/*.svg'],
     fonts: [
-        'assets/fonts/*.{ttf,woff,eot,svg}'
+        'assets/fonts/*.{ttf,woff,woff2,eot,svg}'
         ],
     scss: [
         'assets/scss/main.scss',
