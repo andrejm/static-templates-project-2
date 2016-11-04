@@ -11,7 +11,7 @@ then
 > bower install
 ```
 
-then
+then copy fresh foundation-sites settings file `bower_components/foundation-sites/scss/settings/_settings.scss`  to `assets/scss/` and then run
 
 ```
 > gulp
