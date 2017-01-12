@@ -40,33 +40,33 @@ var paths = {
         'assets/js/components/*.js',
         'assets/js/main.js'
         ],
-    copyScripts: [
+        copyScripts: [
         'bower_components/jquery/dist/jquery.min.js',
         'bower_components/svg4everybody/dist/svg4everybody.min.js'
         ],
-    images: ['assets/svg/*.svg'],
-    fonts: [
+        images: ['assets/svg/*.svg'],
+        fonts: [
         'assets/fonts/*.{ttf,woff,woff2,eot,svg}'
         ],
-    scss: [
+        scss: [
         'assets/scss/main.scss',
         ],
-    scssWatch: [
+        scssWatch: [
         'assets/scss/**/*.scss'
         ],
-    twigTemplates: [
-      'assets/twig/[^_]*.twig',
-    ],
-    twigWatch: [
-      'assets/twig/*.twig',
-    ],
-    dest : 'dist/'
-};
+        twigTemplates: [
+        'assets/twig/[^_]*.twig',
+        ],
+        twigWatch: [
+        'assets/twig/*.twig',
+        ],
+        dest : 'dist/'
+    };
 
 // Compile Sass
 gulp.task('sass', function() {
     gulp.src(paths.scss)
-        .pipe(plumber())
+    .pipe(plumber())
         // .pipe(sourcemaps.init()) // Initialize sourcemap plugin
         .pipe(cssGlobbing({
           extensions: ['.scss'],
@@ -75,85 +75,87 @@ gulp.task('sass', function() {
             globBlockBegin: 'cssGlobbingBegin',
             globBlockEnd: 'cssGlobbingEnd',
             globBlockContents: 'components/*.scss'
-          },
-          scssImportPath: {
+        },
+        scssImportPath: {
             leading_underscore: false,
             filename_extension: false
-          }
-        }))
+        }
+    }))
         .pipe(sass({
             includePaths: ['assets/scss', 'bower_components/foundation-sites/scss'],
             outputStyle: 'expanded'
         }))
         .pipe(prefix(
             "last 2 versions", "> 1%", "ie 8"
-        ))
+            ))
         // .pipe(minifycss()) //TODO turn on
         // .pipe(sourcemaps.write())
         .pipe(gulp.dest(paths.dest + 'css'))
         .pipe(browserSync.stream());
-});
+    });
 
 // Compile Twig templates
 gulp.task('twig', function () {
     'use strict';
     return gulp.src(paths.twigTemplates)
-        .pipe(twig())
-        .pipe(gulp.dest('.'))
-        .pipe(browserSync.stream());
+    .pipe(twig())
+    .pipe(gulp.dest('.'))
+    .pipe(browserSync.stream());
 });
 
 // Uglify JS
 gulp.task('uglify', function() {
     gulp.src( ['assets/js/main.js'] )
-        .pipe(plumber())
-        .pipe(uglify({
-            outSourceMap: true
-        }))
-        .pipe(gulp.dest(paths.dest + 'js'));
+    .pipe(plumber())
+    .pipe(uglify({
+        outSourceMap: true
+    }))
+    .pipe(gulp.dest(paths.dest + 'js'));
 });
 
 // Concat
 // TODO concat normalize.css from bower components with our stylesheet
 gulp.task('concat', function() {
   gulp.src( paths.scripts )
-    .pipe(plumber())
-    .pipe(concat('main.js'))
+  .pipe(plumber())
+  .pipe(concat('main.js'))
     // .pipe(uglify({
     //     outSourceMap: true
     // }))
+    .pipe(babel({
+        presets: ['es2015']
+    }))
     .pipe(gulp.dest(paths.dest + 'js'))
-    .pipe(babel())
     .pipe(browserSync.stream());
 });
 
 // //SVGs
 gulp.task('svgstore', function () {
     return gulp
-        .src(paths.images)
-        .pipe(svgmin(function (file) {
-            var prefix = path.basename(file.relative, path.extname(file.relative));
-            return {
-                plugins: [{
-                    cleanupIDs: {
-                        prefix: prefix + '-',
-                        minify: true
-                    }
-                }]
-            };
-        }))
-        .pipe(svgstore())
-        .pipe(gulp.dest(paths.dest + '/svg/'));
+    .src(paths.images)
+    .pipe(svgmin(function (file) {
+        var prefix = path.basename(file.relative, path.extname(file.relative));
+        return {
+            plugins: [{
+                cleanupIDs: {
+                    prefix: prefix + '-',
+                    minify: true
+                }
+            }]
+        };
+    }))
+    .pipe(svgstore())
+    .pipe(gulp.dest(paths.dest + '/svg/'));
 });
 
 gulp.task('copyfonts', function() {
-   gulp.src(paths.fonts)
-   .pipe(gulp.dest(paths.dest + '/fonts'));
+ gulp.src(paths.fonts)
+ .pipe(gulp.dest(paths.dest + '/fonts'));
 });
 
 gulp.task('copyScripts', function() {
-   gulp.src(paths.copyScripts)
-   .pipe(gulp.dest(paths.dest + '/js'));
+ gulp.src(paths.copyScripts)
+ .pipe(gulp.dest(paths.dest + '/js'));
 });
 
 gulp.task('serve', function() {
