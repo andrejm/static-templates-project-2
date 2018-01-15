@@ -5,7 +5,7 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var plumber = require('gulp-plumber');
 var prefix = require('gulp-autoprefixer');
-var minifycss = require('gulp-minify-css');
+var minifycss = require('gulp-clean-css'); //ex gulp-clean-css
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var browserSync = require('browser-sync').create();
@@ -20,31 +20,35 @@ var babel = require('gulp-babel');
 // Paths
 var paths = {
     scripts: [
-        // 'bower_components/modernizr/modernizr.js',
-        // 'bower_components/fastclick/lib/fastclick.js',
-        // 'bower_components/foundation/js/foundation/foundation.js',
-        // 'bower_components/foundation/js/foundation/foundation.tab.js',
+        // 'node_modules/modernizr/modernizr.js',
+        // 'node_modules/fastclick/lib/fastclick.js',
         // 'assets/js/navigation.js',
         
+        // TODO temporarily loading from dist folder, find out how to load original files
+        // https://foundation.zurb.com/forum/posts/53440-foundation-custom-gulp---uncaught-referenceerror-exports-is-not-defined
 
-        'bower_components/foundation-sites/js/foundation.core.js',
-        'bower_components/foundation-sites/js/foundation.util.mediaQuery.js',
-        'bower_components/foundation-sites/js/foundation.util.keyboard.js',
-        'bower_components/foundation-sites/js/foundation.util.motion.js',
-        'bower_components/foundation-sites/js/foundation.util.timerAndImageLoader.js',
-        'bower_components/foundation-sites/js/foundation.util.touch.js',
-        // 'bower_components/foundation-sites/js/foundation.toggler.js',
-        'bower_components/foundation-sites/js/foundation.responsiveMenu.js',
-        'bower_components/foundation-sites/js/foundation.responsiveToggle.js',
-        'bower_components/foundation-sites/js/foundation.orbit.js',
+        'node_modules/foundation-sites/dist/js/foundation.core.js', //must be loaded
+        'node_modules/foundation-sites/dist/js/foundation.util.mediaQuery.js', //must be loaded
+        'node_modules/foundation-sites/dist/js/foundation.smoothScroll.js',
+        // 'node_modules/foundation-sites/js/foundation.util.keyboard.js',
+        // 'node_modules/foundation-sites/js/foundation.util.motion.js',
+        // 'node_modules/foundation-sites/js/foundation.util.timerAndImageLoader.js',
+        // 'node_modules/foundation-sites/js/foundation.util.touch.js',
+        // 'node_modules/foundation-sites/js/foundation.toggler.js',
+        // 'node_modules/foundation-sites/js/foundation.responsiveMenu.js',
+        // 'node_modules/foundation-sites/js/foundation.responsiveToggle.js',
+        // 'node_modules/foundation-sites/js/foundation.orbit.js',
         'assets/js/components/*.js',
         'assets/js/main.js'
         ],
         copyScripts: [
-        'bower_components/jquery/dist/jquery.min.js',
-        'bower_components/svg4everybody/dist/svg4everybody.min.js'
+        // 'node_modules/jquery/dist/jquery.min.js',
+        // 'node_modules/svg4everybody/dist/svg4everybody.min.js'
         ],
         images: ['assets/svg/*.svg'],
+        copyImages: [
+            'assets/images/*.{png,jpg,jpeg,svg}'
+        ],
         fonts: [
         'assets/fonts/*.{ttf,woff,woff2,eot,svg}'
         ],
@@ -53,6 +57,11 @@ var paths = {
         ],
         scssWatch: [
         'assets/scss/**/*.scss'
+        ],
+        scssPaths: [
+        'assets/scss/**/*.scss', 
+        'node_modules/foundation-sites/scss', 
+        // 'node_modules/motion-ui'
         ],
         twigTemplates: [
         'assets/twig/[^_]*.twig',
@@ -82,7 +91,7 @@ gulp.task('sass', function() {
         }
     }))
         .pipe(sass({
-            includePaths: ['assets/scss', 'bower_components/foundation-sites/scss'],
+            includePaths: paths.scssPaths,
             outputStyle: 'expanded'
         }))
         .pipe(prefix(
@@ -118,13 +127,13 @@ gulp.task('uglify', function() {
 gulp.task('concat', function() {
   gulp.src( paths.scripts )
   .pipe(plumber())
+    .pipe(babel({
+        presets: ['es2015']
+    }))
   .pipe(concat('main.js'))
     // .pipe(uglify({
     //     outSourceMap: true
     // }))
-    .pipe(babel({
-        presets: ['es2015']
-    }))
     .pipe(gulp.dest(paths.dest + 'js'))
     .pipe(browserSync.stream());
 });
@@ -153,6 +162,11 @@ gulp.task('copyfonts', function() {
  .pipe(gulp.dest(paths.dest + '/fonts'));
 });
 
+gulp.task('copyImages', function() {
+ gulp.src(paths.copyImages)
+ .pipe(gulp.dest(paths.dest + '/images'));
+});
+
 gulp.task('copyScripts', function() {
  gulp.src(paths.copyScripts)
  .pipe(gulp.dest(paths.dest + '/js'));
@@ -173,4 +187,4 @@ gulp.task('serve', function() {
     // gulp.watch("./*.html").on('change', browserSync.reload);
 });
 
-gulp.task('default', [ 'copyfonts', 'copyScripts', 'svgstore', 'sass', 'twig', 'concat', 'serve' ]);
+gulp.task('default', [ 'copyfonts', 'copyScripts', 'copyImages', 'svgstore', 'sass', 'twig', 'concat', 'serve' ]);
